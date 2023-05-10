@@ -15,38 +15,52 @@ canvas.height = 500;
 const context = canvas.getContext("2d");
 const GameSpeed = 7;
 
-class Paddle{
+class Paddle {
     constructor() {
         this.width = 100;
         this.height = 10;
         this.speed = GameSpeed;
 
         this.position = {
-            x: canvas.width/2 - this.width/2,
+            x: canvas.width / 2 - this.width / 2,
             y: canvas.height - this.height - 20,
         }
         this.velocity = {
             x: 0,
             y: 0,
         }
+
+        // Ajouter des événements tactiles pour le mouvement de la raquette
+        canvas.addEventListener("touchstart", (event) => {
+            const touch = event.touches[0];
+            if (touch.pageX < canvas.width / 2) {
+                this.velocity.x = -this.speed;
+            } else {
+                this.velocity.x = this.speed;
+            }
+        });
+
+        canvas.addEventListener("touchend", () => {
+            this.velocity.x = 0;
+        });
     }
 
-    draw() {
-        context.beginPath();
-        context.globalAlpha = this.opacity;
-        context.fillStyle = "white";
-        context.fillRect(this.position.x , this.position.y , this.width , this.height);
-        context.closePath();
-    }
-
-    update() {
-        this.draw();
-        this.position.x += this.velocity.x;
-        // this.position.y += this.velocity.y;
-    }
+draw() {
+    context.beginPath();
+    context.globalAlpha = this.opacity;
+    context.fillStyle = "white";
+    context.fillRect(this.position.x, this.position.y, this.width, this.height);
+    context.closePath();
 }
 
-class Ball{
+update() {
+    this.draw();
+    this.position.x += this.velocity.x;
+    // this.position.y += this.velocity.y;
+}
+}
+
+class Ball {
     constructor(position) {
         this.radius = 10;
         this.position = position;
@@ -73,8 +87,8 @@ class Ball{
     }
 }
 
-class Brike{
-    constructor(width , height , position , color) {
+class Brike {
+    constructor(width, height, position, color) {
         this.width = width;
         this.height = height;
         this.position = position;
@@ -91,20 +105,20 @@ class Brike{
     }
 }
 
-class GridBricks{
+class GridBricks {
     constructor(map) {
         this.map = map;
         this.grid = [];
         this.brikeWidth = 80;
         this.brikeHeight = 20;
-        
+
         let startPoint = 20;
 
-        for (let i = 0; i < this.map.length; i++){
+        for (let i = 0; i < this.map.length; i++) {
             const randColor = Math.floor(Math.random() * 360);
             const color = `hsl(${randColor} , 100% , 70%)`;
             this.grid[i] = [];
-            for (let j = 0; j < this.map[i].length; j++){
+            for (let j = 0; j < this.map[i].length; j++) {
                 if (this.map[i][j] === '-') { /// Brick
                     this.grid[i][j] = new Brike(
                         this.brikeWidth,
@@ -133,8 +147,8 @@ class GridBricks{
     }
 
     draw() {
-        for (let i = 0; i < this.map.length; i++){
-            for (let j = 0; j < this.map[i].length; j++){
+        for (let i = 0; i < this.map.length; i++) {
+            for (let j = 0; j < this.map[i].length; j++) {
                 if (this.map[i][j] === ' ') {
                     this.grid[i][j].opacity = 0;
                 }
@@ -175,10 +189,10 @@ function initGame() {
     ball = new Ball({ x: paddle.position.x + paddle.width / 2, y: paddle.position.y });
 
     bricks = new GridBricks([
-        ["-" , "-" , "-" , "-" , "-"],
-        ["-" , "-" , "-" , "-" , "-"],
-        ["-" , "-" , "-" , "-" , "-"],
-        ["-" , "-" , "-" , "-" , "-"],
+        ["-", "-", "-", "-", "-"],
+        ["-", "-", "-", "-", "-"],
+        ["-", "-", "-", "-", "-"],
+        ["-", "-", "-", "-", "-"],
     ]);
 
     score = 0;
@@ -192,13 +206,13 @@ function upLevel(s) {
     ball = new Ball({ x: paddle.position.x + paddle.width / 2, y: paddle.position.y });
 
     bricks = new GridBricks([
-        ["-" , "-" , "-" , "-" , "-"],
-        [" " , "-" , "-" , "-" , " "],
-        [" " , " " , "-" , " " , " "],
-        [" " , " " , "-" , " " , " "],
-        [" " , " " , "-" , " " , " "],
-        [" " , "-" , "-" , "-" , " "],
-        ["-" , "-" , "-" , "-" , "-"],
+        ["-", "-", "-", "-", "-"],
+        [" ", "-", "-", "-", " "],
+        [" ", " ", "-", " ", " "],
+        [" ", " ", "-", " ", " "],
+        [" ", " ", "-", " ", " "],
+        [" ", "-", "-", "-", " "],
+        ["-", "-", "-", "-", "-"],
 
     ]);
 
@@ -223,9 +237,9 @@ function animate() {
     if (ball.position.x + ball.radius >= canvas.width
         || ball.position.x - ball.radius <= 0) {
         ball.velocity.x = -ball.velocity.x;
-    }else if (ball.position.y - ball.radius <= 0) {
+    } else if (ball.position.y - ball.radius <= 0) {
         ball.velocity.y = -ball.velocity.y;
-    }else if (ball.position.y + ball.radius >= canvas.height) {
+    } else if (ball.position.y + ball.radius >= canvas.height) {
         life--;
         /// Game Over
         if (life === 0) {
@@ -242,7 +256,7 @@ function animate() {
         && ball.position.y <= paddle.position.y + paddle.height
         && ball.position.x >= paddle.position.x
         && ball.position.x <= paddle.position.x + paddle.width) {
-        
+
         let collidePoint = ball.position.x - (paddle.position.x + paddle.width / 2);
         collidePoint = collidePoint / (paddle.width / 2);
         let angle = collidePoint * (Math.PI / 3);
@@ -251,20 +265,20 @@ function animate() {
     }
 
     /// Collision Detection Between Ball and Bricks
-    for (let i = 0; i < bricks.map.length; i++){
-        for (let j = 0; j < bricks.map[i].length; j++){
+    for (let i = 0; i < bricks.map.length; i++) {
+        for (let j = 0; j < bricks.map[i].length; j++) {
             const brick = bricks.grid[i][j];
             if (bricks.map[i][j] == '-'
                 && ball.position.y >= brick.position.y
                 && ball.position.y <= brick.position.y + brick.height
                 && ((ball.position.x + ball.radius >= brick.position.x &&
                     ball.position.x + ball.radius <= brick.position.x + brick.width)
-                || (ball.position.x - ball.radius >= brick.position.x
-                && ball.position.x - ball.radius <= brick.position.x + brick.width))) {
-                
+                    || (ball.position.x - ball.radius >= brick.position.x
+                        && ball.position.x - ball.radius <= brick.position.x + brick.width))) {
+
                 bricks.map[i][j] = " ";
                 ball.velocity.y = -ball.velocity.y;
-                
+
                 /// Score
                 score += 10;
             }
@@ -297,7 +311,7 @@ function createImage(path) {
     return img;
 }
 
-function gameStats(text , position , image) {
+function gameStats(text, position, image) {
     context.beginPath();
     context.drawImage(image, position.x, position.y, 30, 30);
     context.font = "20px Arial";
@@ -306,8 +320,8 @@ function gameStats(text , position , image) {
 }
 
 function checkWinning() {
-    for (let i = 0; i < bricks.map.length; i++){
-        for (let j = 0; j < bricks.map[i].length; j++){
+    for (let i = 0; i < bricks.map.length; i++) {
+        for (let j = 0; j < bricks.map[i].length; j++) {
             if (bricks.map[i][j] == "-")
                 return false;
         }
