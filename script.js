@@ -35,10 +35,11 @@ class Paddle {
             const touch = event.touches[0];
             if (touch.pageX < canvas.width / 2) {
                 this.velocity.x = -this.speed;
+            } else if(touch.pageY < canvas.width / 2){
                 this.velocity.y = -this.speed;
-            } else {
+            }
+            else {
                 this.velocity.x = this.speed;
-                this.velocity.y = this.speed;
             }
         });
 
