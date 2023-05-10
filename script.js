@@ -19,7 +19,7 @@ class Paddle {
     constructor() {
         this.width = 100;
         this.height = 10;
-        this.speed = GameSpeed * 10;
+        this.speed = GameSpeed;
 
         this.position = {
             x: canvas.width / 2 - this.width / 2,
@@ -34,9 +34,9 @@ class Paddle {
         canvas.addEventListener("touchstart", (event) => {
             const touch = event.touches[0];
             if (touch.pageX < canvas.width / 2) {
-                this.velocity.x = -this.speed;
+                this.velocity.x = -this.speed + 10;
             } else {
-                this.velocity.x = this.speed;
+                this.velocity.x = this.speed + 10;
             }
         });
 
