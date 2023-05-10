@@ -19,7 +19,7 @@ class Paddle {
     constructor() {
         this.width = 100;
         this.height = 10;
-        this.speed = GameSpeed;
+        this.speed = GameSpeed * 2;
 
         this.position = {
             x: canvas.width / 2 - this.width / 2,
