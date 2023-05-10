@@ -34,9 +34,9 @@ class Paddle {
         canvas.addEventListener("touchstart", (event) => {
             const touch = event.touches[0];
             if (touch.pageX < canvas.width / 2) {
-                this.velocity.x = -this.speed + 10;
+                this.velocity.x = -this.speed + 15;
             } else {
-                this.velocity.x = this.speed + 10;
+                this.velocity.x = this.speed + 15;
             }
         });
 
