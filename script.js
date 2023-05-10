@@ -14,12 +14,14 @@ canvas.height = 500;
 
 const context = canvas.getContext("2d");
 const GameSpeed = 7;
+const MobileSpeed = 14;
 
 class Paddle {
     constructor() {
         this.width = 100;
         this.height = 10;
         this.speed = GameSpeed;
+        this.speedMob = MobileSpeed;
 
         this.position = {
             x: canvas.width / 2 - this.width / 2,
@@ -34,12 +36,13 @@ class Paddle {
         canvas.addEventListener("touchstart", (event) => {
             const touch = event.touches[0];
             if (touch.pageX < canvas.width / 2) {
-                this.velocity.x = -this.speed + 10;
+                this.velocity.x = -this.speedMob;
             } else if (touch.pageY < canvas.width / 2) {
-                this.velocity.y = -this.speed + 10;
+                this.velocity.y = -this.speedMob;
             }
             else {
-                this.velocity.x = this.speed;
+                this.velocity.x = this.speedMob;
+                this.velocity.y = this.speedMob;
             }
         });
 
